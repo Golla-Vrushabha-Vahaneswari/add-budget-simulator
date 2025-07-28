@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ad Budget Simulator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background-color: #ffffff10;
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 26px;
+      color: #ffeb3b;
+    }
+
+    label {
+      font-size: 15px;
+      margin-bottom: 6px;
+      display: block;
+      color: #f0f0f0;
+    }
+
+    select, input[type="number"], input[type="range"] {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      background-color: #ffffff30;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    input[type="range"] {
+      accent-color: #ffeb3b;
+    }
+
+    .results {
+      background-color: #ffffff15;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .result-item {
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .result-item span {
+      font-weight: bold;
+      color: #4caf50;
+    }
+
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ad Budget Simulator</h1>
+    <label for="platform">Select Ad Platform:</label>
+    <select id="platform">
+      <option value="Google">Google Ads</option>
+      <option value="Facebook">Facebook Ads</option>
+      <option value="Instagram">Instagram Ads</option>
+    </select>
+
+    <label for="budget">Ad Budget (₹):</label>
+    <input type="number" id="budget" placeholder="Enter amount like 1000" value="2000" />
+
+    <label for="duration">Duration (Days): <span id="dayValue">5</span></label>
+    <input type="range" id="duration" min="1" max="30" value="5" />
+
+    <div class="results">
+      <div class="result-item">Estimated Clicks: <span id="clicks">--</span></div>
+      <div class="result-item">Estimated Impressions: <span id="impressions">--</span></div>
+      <div class="result-item">Cost per Click: <span id="cpc">--</span> ₹</div>
+    </div>
+
+    <footer>
+      © 2025 AdSim by YourName | Frontend Project
+    </footer>
+  </div>
+
+  <script>
+    const platformSelect = document.getElementById("platform");
+    const budgetInput = document.getElementById("budget");
+    const durationSlider = document.getElementById("duration");
+    const dayValue = document.getElementById("dayValue");
+
+    const clicksOutput = document.getElementById("clicks");
+    const impressionsOutput = document.getElementById("impressions");
+    const cpcOutput = document.getElementById("cpc");
+
+    function calculate() {
+      const platform = platformSelect.value;
+      const budget = parseFloat(budgetInput.value);
+      const days = parseInt(durationSlider.value);
+
+      if (isNaN(budget) || budget <= 0) {
+        clicksOutput.innerText = impressionsOutput.innerText = cpcOutput.innerText = "--";
+        return;
+      }
+
+      let cpcRate;
+      if (platform === "Google") cpcRate = 5;
+      else if (platform === "Facebook") cpcRate = 4;
+      else if (platform === "Instagram") cpcRate = 3;
+
+      const totalClicks = Math.floor(budget / cpcRate);
+      const impressions = totalClicks * 20;
+      const formattedCPC = cpcRate.toFixed(2);
+
+      clicksOutput.innerText = totalClicks;
+      impressionsOutput.innerText = impressions;
+      cpcOutput.innerText = formattedCPC;
+    }
+
+    // Attach event listeners
+    platformSelect.addEventListener("change", calculate);
+    budgetInput.addEventListener("input", calculate);
+    durationSlider.addEventListener("input", () => {
+      dayValue.innerText = durationSlider.value;
+      calculate();
+    });
+
+    // Run once on load
+    calculate();
+  </script>
+</body>
+</html>
